@@ -1,0 +1,1 @@
+{"version":3,"file":"checkCondition.d.ts","sourceRoot":"","sources":["../../../src/checkCondition.ts"],"names":[],"mappings":"AAIA,OAAO,EAAE,SAAS,EAAE,MAAM,wBAAwB,CAAC;AAEnD,KAAK,oBAAoB,GAAG;IACxB,QAAQ,CAAC,EAAE,OAAO,CAAC;CACtB,CAAA;AAED,wBAAgB,cAAc,CAAC,SAAS,EAAE,SAAS,EAAE,IAAI,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,EAAE,MAAM,GAAE,oBAAyB,GAAG,OAAO,CAmF1H"}
