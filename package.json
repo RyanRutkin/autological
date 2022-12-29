@@ -1,6 +1,6 @@
 {
-  "name": "autological",
-  "version": "1.0.0",
+  "name": "@ryanrutkin/autological",
+  "version": "1.0.1",
   "description": "A lightweight querying library for local data processing.",
   "types": "./lib/cjs/types/index.d.ts",
   "main": "./lib/cjs/index.js",
