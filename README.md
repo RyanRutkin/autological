@@ -171,7 +171,7 @@ const data = [
     }
 ];
 ```
-Note how we have a nested `address.state` and an array of `agents.
+Note how we have a nested `address.state` and an array of `agents`.
 
 Let's try finding all of the locations that are in Connecticut OR have an agent NOT named Bob.
 ```
