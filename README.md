@@ -92,18 +92,26 @@ const matches = data.filter(entry => checkCondition(filter, entry));
 ["location","=","ABC Motors"]
 ```
 That's the goal, and we'll get there.
+
 The initial goal was a working POC, and it worked! And it's fast!
+
 The syntax currently supported is our "verbose" syntax, and will always be the syntax accepted by our `checkCondition` method.
+
 The idea is that you can always call `checkCondition` in a streamlined fashion, passing each entry item individually.
 
 When the "sexy syntax" is supported, you will be passing the entire payload (the full `data` object we defined) and receiving the result (filtered set, aggregate, etc.).
+
 This is because we will first need to interpret the "sexy syntax" and transform it into the "verbose syntax" for faster operations.
+
 You wouldn't want us to type check every condition for every data entry now would you?
 
 ## What makes Autological so fast?
 Autological takes advantage of caching each path resolution, so it doesn't need to be resolved again per data object.
+
 Currently, this is done on a per-data-entry basis (per each index of our `data` object we defined in the "Basic Example").
+
 This comes in handy when dealing with much more complex queries, which could reference the same data point multiple times.
+
 Yes, we've seen these kinds of queries in production. It helps A LOT.
 
 ## A more complex example
@@ -164,6 +172,7 @@ const data = [
 ];
 ```
 Note how we have a nested `address.state` and an array of `agents.
+
 Let's try finding all of the locations that are in Connecticut OR have an agent NOT named Bob.
 ```
 const matches = data.filter(entry => checkCondition({
@@ -264,6 +273,7 @@ Again, these have the same result as each other and the verbose syntax, but they
 ## What config options are available?
 ### autoCast is being threatened with deprecation!
 Currently only one special config option exists, and that is the `autoCast` option.
+
 This can be passed to `checkCondition` to allow sloppy type coersion to take affect.
 
 For example, if you had:
@@ -299,7 +309,9 @@ const matches = data.filter(entry => checkCondition({
 // matches = []
 ```
 The result is that there are no matches.
+
 This is because the provided value is a string, and the field is an integer.
+
 By providing `autoCast` in config, we can automatically convert these values and get the expected result.
 ```
 const matches = data.filter(entry => checkCondition({
@@ -323,5 +335,7 @@ const matches = data.filter(entry => checkCondition({
 
 #### Why is autoCast facing deprecation?
 The fact that `autoCast` exists as an option today requires an additional logical check for every operation within a `Check`.
+
 I played around with the idea of making each logical check a function, and swapping the mapping when in `autoCast` mode, but making each logical check a function would add another layer of operation to each check as well, being even less efficient.
+
 If Autological is to retain it's original purpose of filtering very large datasets very quickly, this needs to be removed.
