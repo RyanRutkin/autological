@@ -120,6 +120,7 @@ Let's set up our `data` object for a more complex example:
 const data = [
     {
         location: "ABC Motors",
+        points: 10,
         address: {
             city: "Springfield",
             state: "IL",
@@ -133,6 +134,7 @@ const data = [
     },
     {
         location: "Mr. Conar Tist",
+        points: 2,
         address: {
             city: "Winter River",
             state: "CT",
@@ -152,6 +154,7 @@ const data = [
     },
     {
         location: "ABC Motors",
+        points: 9,
         address: {
             city: "Hartford",
             state: "CT",
@@ -173,39 +176,65 @@ const data = [
 ```
 Note how we have a nested `address.state` and an array of `agents`.
 
-Let's try finding all of the locations that are in Connecticut OR have an agent NOT named Bob.
+Let's try finding all of the locations that are in Connecticut AND do not have an agent named Jonny OR have a point total over 5.
 ```
 const matches = data.filter(entry => checkCondition({
     "operator": "or",
     "checks": [
         {
-            "path": "address.state",
-            "operator" "=",
-            "value": "CT"
-        },
-        {
-            "path": "agents",
-            "operator": "contains",
-            "condition": {
-                "operator": "and",
-                "checks": [
-                    {
-                        "operator": "not",
-                        "target": {
-                            "path": "name",
-                            "operator": "=",
-                            "value": "Jonny"
+            "operator": "and",
+            "checks": [
+                {
+                    "path": "address.state",
+                    "operator" "=",
+                    "value": "CT"
+                },
+                {
+                    "operator": "not",
+                    "target": {
+                        "path": "agents",
+                        "operator": "contains",
+                        "condition": {
+                            "operator": "and",
+                            "checks": [
+                                {
+                                    "path": "name",
+                                    "operator": "=",
+                                    "value: "Jonny"
+                                }
+                            ]
                         }
                     }
-                ]
-            }
+                }
+            ]
+        },
+        {
+            "path": "points",
+            "operator": ">",
+            "value": 5
+
         }
     ]
 }, data));
 
 // matches = [
 //     {
+//         location: "ABC Motors",
+//         points: 10,
+//         address: {
+//             city: "Springfield",
+//             state: "IL",
+//             zipcode: "55555"
+//         },
+//         agents: [
+//             {
+//                 name: "Bob"
+//             }
+//         ]
+//     },
+//     {
 //        location: "Mr. Conar Tist",
+//        points: 2,
 //        address: {
 //            city: "Winter River",
 //            state: "CT",
@@ -222,25 +251,6 @@ const matches = data.filter(entry => checkCondition({
 //                name: "Michelle"
 //            }
 //        ]
-//    },
-//    {
-//        location: "ABC Motors",
-//        address: {
-//            city: "Hartford",
-//            state: "CT",
-//            zipcode: "55555"
-//        }
-//        agents: [
-//            {
-//                name: "Mike"
-//            },
-//            {
-//                name: "Jonny"
-//            },
-//            {
-//                name: "Ashley"
-//            }
-//        ]
 //    }
 // ]
 ```
@@ -249,26 +259,17 @@ When we release version two, our target "sexy syntax" for this style of filter w
 [
     "or",
     [
-        ["address.state", "=", "CT"],
-        ["agents", "!contains", [
-            ["name", "=", "Jonny"]
-        ]]
+        ["and", [
+            ["address.state", "=", "CT"],
+            ["agents", "!contains", [
+                ["name", "=", "Jonny"]
+            ]]
+        ]],
+        ["points", ">", 5]
     ]
 ]
 ```
-or possibly
-```
-[
-    "or",
-    [
-        ["address.state", "=", "CT"],
-        ["agents", "contains", [
-            ["name", "!=", "Jonny"]
-        ]]
-    ]
-]
-```
-Again, these have the same result as each other and the verbose syntax, but they are easier to read.
+Again, this has the same result as the verbose syntax, but this is easier to read.
 
 ## What config options are available?
 ### autoCast is being threatened with deprecation!
