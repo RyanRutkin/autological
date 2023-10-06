@@ -4,11 +4,7 @@ import { isCondition } from "./guards/isCondition.guard";
 import { isValueCheck } from "./guards/isValueCheck.guard";
 import { Condition } from "./types/Condition.type";
 
-type CheckConditionConfig = {
-    autoCast?: boolean; // Defaults to false
-}
-
-export function checkCondition(condition: Condition, data: Record<string, any>, config: CheckConditionConfig = {}): boolean {
+export function checkCondition(condition: Condition, data: Record<string, any>): boolean {
     const path_cache: Record<string, any> = {};
 
     function processChecks(_condition: Condition, _data: Record<string, any>): boolean {
@@ -30,19 +26,19 @@ export function checkCondition(condition: Condition, data: Record<string, any>, 
                 let result = _condition.operator === 'and' ? true : false;
                 switch (check.operator) {
                     case '=':
-                            result = config.autoCast ? String(sub_data.value) === String(check.value) : sub_data.value === check.value;
+                            result = sub_data.value === check.value;
                         break;
                     case '>':
-                            result = config.autoCast ? String(sub_data.value) > String(check.value) : sub_data.value > check.value;
+                            result = sub_data.value > check.value;
                         break;
                     case '<':
-                            result = config.autoCast ? String(sub_data.value) < String(check.value) : sub_data.value < check.value;
+                            result = sub_data.value < check.value;
                         break;
                     case '>=':
-                            result = config.autoCast ? String(sub_data.value) >= String(check.value) : sub_data.value >= check.value;
+                            result = sub_data.value >= check.value;
                         break;
                     case '<=':
-                            result = config.autoCast ? String(sub_data.value) <= String(check.value) : sub_data.value <= check.value;
+                            result = sub_data.value <= check.value;
                         break;
                 }
     

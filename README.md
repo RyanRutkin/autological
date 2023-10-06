@@ -186,7 +186,7 @@ const matches = data.filter(entry => checkCondition({
             "checks": [
                 {
                     "path": "address.state",
-                    "operator" "=",
+                    "operator": "=",
                     "value": "CT"
                 },
                 {
@@ -200,7 +200,7 @@ const matches = data.filter(entry => checkCondition({
                                 {
                                     "path": "name",
                                     "operator": "=",
-                                    "value: "Jonny"
+                                    "value": "Jonny"
                                 }
                             ]
                         }
@@ -212,7 +212,6 @@ const matches = data.filter(entry => checkCondition({
             "path": "points",
             "operator": ">",
             "value": 5
-
         }
     ]
 }, data));
