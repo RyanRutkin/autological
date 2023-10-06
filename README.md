@@ -115,6 +115,8 @@ This comes in handy when dealing with much more complex queries, which could ref
 Yes, we've seen these kinds of queries in production. It helps A LOT.
 
 ## A more complex example
+*This test has been scaled and benchmarked. As of 1.0.6, this complex filter preforms at 1 microsend per array entry.*
+
 Let's set up our `data` object for a more complex example:
 ```
 const data = [
@@ -271,7 +273,7 @@ When we release version two, our target "sexy syntax" for this style of filter w
 Again, this has the same result as the verbose syntax, but this is easier to read.
 
 ## What config options are available?
-### autoCast is being threatened with deprecation!
+### autoCast has been deprecated as of 1.0.6
 Currently only one special config option exists, and that is the `autoCast` option.
 
 This can be passed to `checkCondition` to allow sloppy type coersion to take affect.

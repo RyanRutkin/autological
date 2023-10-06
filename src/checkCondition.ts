@@ -66,7 +66,14 @@ export function checkCondition(condition: Condition, data: Record<string, any>):
     
                 switch (check.operator) {
                     case 'contains':
-                            return !(sub_data.value as any[]).find(obj => processChecks(check.condition, obj));
+                            let loop_length = sub_data.value.length;
+                            for (let i = 0; i < loop_length; i++) {
+                                const sub_result = processChecks(check.condition, sub_data.value[i]);
+                                if (sub_result) {
+                                    return false;
+                                }
+                            }
+                            return true;
                 }
             }
     
