@@ -1,10 +1,35 @@
-export { checkCondition } from './checkCondition.js';
-export { Check, ValueCheck, ArrayCheck, InversionCheck } from './types/Check.type.js';
-export { Condition } from './types/Condition.type.js';
-export { ValueOperator, ArrayOperator, Operator, InversionOperator, LogicalOperator, VALUE_OPERATORS, ARRAY_OPERATORS, INVERSION_OPERATORS, LOGICAL_OPERATORS } from './types/Operator.type.js';
-export { InvalidCheckTarget } from './errors/InvalidCheckTarget.error.js';
+export { evaluateRules } from './evaluateRules.js';
+export type { Rule } from './types/Rule.type.js';
 export { InvalidOperator } from './errors/InvalidOperator.error.js';
-export { isArrayCheck } from './guards/isArrayCheck.guard.js';
-export { isCondition } from './guards/isCondition.guard.js';
-export { isInversionCheck } from './guards/isInversionCheck.guard.js';
-export { isValueCheck } from './guards/isValueCheck.guard.js';
+export {
+    VALUE_OPERATORS,
+    ARRAY_OPERATORS,
+    ARRAY_INSPECTION_OPERATORS,
+    UNDEFINED_OPERATORS,
+    NULL_OPERATORS,
+    INVERSION_OPERATORS,
+    UNDEFINED_INVERSION_OPERATORS,
+    NULL_INVERSION_OPERATORS,
+    LOGICAL_OPERATORS,
+    VALUE_ARITHMETIC_OPERATORS,
+    NON_TARGET_VALUE_ARITHMETIC_OPERATORS,
+    ARRAY_ARITHMETIC_OPERATORS,
+    INVERSION_ARITHMETIC_OPERATORS
+} from './types/Operator.type';
+export type {
+    ValueOperator,
+    ArrayOperator,
+    ArrayInspectionOperator,
+    UndefinedOperator,
+    NullOperator,
+    InversionOperator,
+    UndefinedInversionOperator,
+    NullInversionOperator,
+    LogicalOperator,
+    CastOperator,
+    ValueArithmeticOperator,
+    NonTargetValueArithmeticOperator,
+    ArrayArithmeticOperator,
+    ArithmeticOperator,
+    InversionArithmeticOperator
+} from './types/Operator.type';
