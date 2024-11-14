@@ -5,9 +5,11 @@ import {
     CastOperator,
     InversionArithmeticOperator,
     InversionOperator,
+    LengthOperator,
     LogicalOperator,
     NullInversionOperator,
     NullOperator,
+    SetOperator,
     UndefinedInversionOperator,
     UndefinedOperator,
     ValueArithmeticOperator,
@@ -28,6 +30,31 @@ export type CastRule = {
     path?: string;
     operator: CastOperator;
     castTo: 'string' | 'boolean' | 'number' | 'JSON';
+}
+
+export type SetRule = {
+    path?: string;
+    operator: SetOperator;
+    setPath: string;
+    value: any;
+}
+
+export type SetRuleDerived = {
+    path?: string;
+    operator: SetOperator;
+    setPath: string;
+    getValue: Rule[];
+}
+
+export type SetRuleCascade = {
+    path?: string;
+    operator: SetOperator;
+    setPath: string;
+}
+
+export type LengthRule = {
+    path?: string;
+    operator: LengthOperator;
 }
 
 export type LogicalValueRule = {
@@ -96,4 +123,8 @@ export type Rule =
     ArrayArtithmeticInspectionRule |
     LogicalGroupingRule |
     PathResolutionRule |
-    ArrayInspectionRule;
+    ArrayInspectionRule |
+    SetRule |
+    SetRuleDerived |
+    SetRuleCascade |
+    LengthRule;

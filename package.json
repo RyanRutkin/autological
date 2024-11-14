@@ -42,6 +42,6 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "json-pointer-relational": "^1.0.3"
+    "json-pointer-relational": "^1.0.7"
   }
 }

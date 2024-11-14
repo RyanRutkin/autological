@@ -17,6 +17,8 @@ export type NullInversionOperator = typeof NULL_INVERSION_OPERATORS[number];
 export const LOGICAL_OPERATORS = ['and', 'or'] as const;
 export type LogicalOperator = typeof LOGICAL_OPERATORS[number];
 export type CastOperator = 'cast';
+export type SetOperator = 'set';
+export type LengthOperator = "len";
 
 export const VALUE_ARITHMETIC_OPERATORS = ['+', '-', '*', '/', '%', '^'] as const;
 export type ValueArithmeticOperator = typeof VALUE_ARITHMETIC_OPERATORS[number];

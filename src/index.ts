@@ -1,6 +1,5 @@
 export { evaluateRules } from './evaluateRules.js';
 export type { Rule } from './types/Rule.type.js';
-export { InvalidOperator } from './errors/InvalidOperator.error.js';
 export {
     VALUE_OPERATORS,
     ARRAY_OPERATORS,
@@ -27,6 +26,8 @@ export type {
     NullInversionOperator,
     LogicalOperator,
     CastOperator,
+    SetOperator,
+    LengthOperator,
     ValueArithmeticOperator,
     NonTargetValueArithmeticOperator,
     ArrayArithmeticOperator,
