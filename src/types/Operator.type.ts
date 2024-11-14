@@ -19,9 +19,18 @@ export type LogicalOperator = typeof LOGICAL_OPERATORS[number];
 export type CastOperator = 'cast';
 export type SetOperator = 'set';
 export type LengthOperator = "len";
+export type SliceOperator = "slice";
+export type SpliceOperator = "splice";
+export type SortOperator = "sort";
+
 
 export const VALUE_ARITHMETIC_OPERATORS = ['+', '-', '*', '/', '%', '^'] as const;
 export type ValueArithmeticOperator = typeof VALUE_ARITHMETIC_OPERATORS[number];
+export const SORT_COMPARISON_OPERATORS = [
+    ...VALUE_ARITHMETIC_OPERATORS,
+    '>', '<', '>=', '<='
+] as const;
+export type SortComparisonOperator = typeof SORT_COMPARISON_OPERATORS[number];
 export const NON_TARGET_VALUE_ARITHMETIC_OPERATORS = ['sqrt'] as const;
 export type NonTargetValueArithmeticOperator = typeof NON_TARGET_VALUE_ARITHMETIC_OPERATORS[number];
 export const ARRAY_ARITHMETIC_OPERATORS = ['min', 'max', 'sum', 'mean', 'median', 'mode'] as const;

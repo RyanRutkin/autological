@@ -10,6 +10,10 @@ import {
     NullInversionOperator,
     NullOperator,
     SetOperator,
+    SliceOperator,
+    SortComparisonOperator,
+    SortOperator,
+    SpliceOperator,
     UndefinedInversionOperator,
     UndefinedOperator,
     ValueArithmeticOperator,
@@ -113,6 +117,28 @@ export type ArrayInspectionRule = {
     rules: Rule[];
 }
 
+export type ArraySliceRule = {
+    path?: string;
+    operator: SliceOperator;
+    startIndex?: number;
+    endIndex: number;
+}
+
+export type ArraySpliceRule = {
+    path?: string;
+    operator: SpliceOperator;
+    startIndex?: number;
+    deleteCount?: number;
+    itemsToAdd?: any[];
+}
+
+export type ArraySortRule = {
+    path?: string;
+    operator: SortOperator;
+    getComparisonValue: Rule[];
+    comparisonOperator?: SortComparisonOperator;
+}
+
 export type Rule = 
     EndRule |
     CastRule |
@@ -127,4 +153,7 @@ export type Rule =
     SetRule |
     SetRuleDerived |
     SetRuleCascade |
-    LengthRule;
+    LengthRule |
+    ArraySliceRule |
+    ArraySpliceRule |
+    ArraySortRule;

@@ -13,6 +13,13 @@ type RuleMatch = {
     value: any;
 }
 
+type JsonDocument = Record<string, any>;
+
+type MapSortEntry = {
+    index: number;
+    value: any;
+}
+
 // Needs to essentially be rewritten for new Rule structure
 function isNumeric(n: any): boolean {
     return !isNaN(parseFloat(n)) && isFinite(n);
@@ -22,15 +29,17 @@ function isNumeric(n: any): boolean {
 function buildTreeFromRefPoint(point: RefPoint): RefPoint[] {
     const tree: RefPoint[] = [point];
     let curPoint = point;
-    // TODO - prevent infinite loop
+    const pathMap: Record<string, boolean> = {};
     while (curPoint.parent) {
+        if (pathMap[curPoint.parent.normalizedPath]) {
+            throw new Error('Unable to process document structure. Infinite loop detected.');
+        }
+        pathMap[curPoint.parent.normalizedPath] = true;
         tree.unshift(curPoint.parent);
         curPoint = curPoint.parent
     }
     return tree;
 }
-
-type JsonDocument = Record<string, any>;
 
 function getErrorMessage(e: unknown) {
     try {
@@ -40,11 +49,6 @@ function getErrorMessage(e: unknown) {
     }
 }
 
-// TODO
-// - array sort
-// - array slice
-// - array insertion (splice?)
-// - array length
 class RuleEvaluator {
     constructor(kwargs: {
         rules: Rule[];
@@ -75,7 +79,6 @@ class RuleEvaluator {
         this.currentDocument = this.documentMap[this.primaryDocumentId];
     }
 
-    // Must be normalized paths oonly
     rules: Rule[];
     documentMap: Record<string, JsonDocument>;
     primaryDocumentId: string;
@@ -742,6 +745,205 @@ class RuleEvaluator {
         }
     }
 
+    private handleArraySliceRule(genericRule: Record<string, any>, curRefPoint: RefPoint, pathVal: any): RuleMatch {
+        const curOperator: string = genericRule['operator'];
+        if (curOperator !== "slice") {
+            return {
+                match: false,
+                value: null
+            }
+        }
+        if (!Array.isArray(pathVal)) {
+            this.errorHandler(`Cannot perform operation "${curOperator}" on non-array`);
+            throw new Error('unhit error makes typescript happy');
+        }
+        const { startIndex, endIndex } = genericRule;
+        if (startIndex === undefined && endIndex === undefined) {
+            return {
+                match: true,
+                value: {
+                    result: pathVal,
+                    refPoint: curRefPoint
+                }
+            }
+        }
+        if (startIndex === undefined || endIndex === undefined) {
+            return {
+                match: true,
+                value: {
+                    result: pathVal.slice(startIndex === undefined ? endIndex : startIndex),
+                    refPoint: curRefPoint
+                }
+            }
+        }
+        return {
+            match: true,
+            value: {
+                result: pathVal.slice(startIndex, endIndex),
+                refPoint: curRefPoint
+            }
+        }
+    }
+
+    private handleArraySpliceRule(genericRule: Record<string, any>, curRefPoint: RefPoint, pathVal: any): RuleMatch {
+        const curOperator: string = genericRule['operator'];
+        if (curOperator !== "splice") {
+            return {
+                match: false,
+                value: null
+            }
+        }
+        if (!Array.isArray(pathVal)) {
+            this.errorHandler(`Cannot perform operation "${curOperator}" on non-array`);
+            throw new Error('unhit error makes typescript happy');
+        }
+        const {
+            startIndex,
+            deleteCount,
+            itemsToAdd
+        } = genericRule;
+
+        // Handle edge case of startIndex being explicitly omitted
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice#start
+        if (!Object.hasOwn(genericRule, 'startIndex')) {
+            return {
+                match: true,
+                value: {
+                    result: pathVal,
+                    refPoint: curRefPoint
+                }
+            }
+        }
+        // Do not use isNumeric as Infinity and -Infinity are valid
+        // undefined is valid as it gets converted to 0
+        if (startIndex !== undefined && typeof startIndex !== 'number') {
+            throw new Error(`Cannot perform operation "${curOperator}." Provided start index must be a number or undefined.`);
+        }
+        let arrToSplice = [...pathVal];
+        // Handle edge cases of deleteCount being omitted
+        if (!Object.hasOwn(genericRule, 'deleteCount') && !itemsToAdd) {
+            arrToSplice.splice(startIndex);
+            return {
+                match: true,
+                value: {
+                    result: arrToSplice,
+                    refPoint: curRefPoint
+                }
+            }
+        }
+        // Handle edge cases of deleteCount being omitted
+        if (!Object.hasOwn(genericRule, 'deleteCount')) {
+            arrToSplice.splice(startIndex, Infinity, ...itemsToAdd)
+            return {
+                match: true,
+                value: {
+                    result: arrToSplice,
+                    refPoint: curRefPoint
+                }
+            }
+        }
+        arrToSplice.splice(startIndex, deleteCount, ...itemsToAdd)
+        return {
+            match: true,
+            value: {
+                result: arrToSplice,
+                refPoint: curRefPoint
+            }
+        }
+    }
+
+    private handleArraySortRule(genericRule: Record<string, any>, curRefPoint: RefPoint, pathVal: any): RuleMatch {
+        const curOperator: string = genericRule['operator'];
+        if (curOperator !== "sort") {
+            return {
+                match: false,
+                value: null
+            }
+        }
+        if (!Array.isArray(pathVal)) {
+            this.errorHandler(`Cannot perform operation "${curOperator}" on non-array`);
+            throw new Error('unhit error makes typescript happy');
+        }
+        let comparisonOperator = genericRule['comparisonOperator'];
+        if (!comparisonOperator) {
+            comparisonOperator = '>';
+        }
+
+        const getComparisonValue = genericRule['getComparisonValue'];
+        const compareValueMap: MapSortEntry[] = [];
+        for (let arrIdx = 0; arrIdx < pathVal.length; arrIdx++) {
+            let arrVal = pathVal[arrIdx];
+            const arrRefPoint: RefPoint = {
+                obj: arrVal,
+                key: String(arrIdx),
+                normalizedPath: `${curRefPoint.normalizedPath}/${String(arrIdx)}`,
+                parent: curRefPoint
+            }
+            for (let ruleIdx = 0; ruleIdx < getComparisonValue.length; ruleIdx++) {
+                const { result } = this.process(getComparisonValue[ruleIdx], arrRefPoint, arrVal);
+                arrVal = result;
+            }
+            compareValueMap[arrIdx] = {
+                index: arrIdx,
+                value: arrVal
+            };
+        }
+
+        compareValueMap.sort((a, b) => {
+            switch(comparisonOperator) {
+                case '>':
+                    if (a.value > b.value) {
+                        return 1;
+                    }
+                    if (b.value < a.value) {
+                        return -1;
+                    }
+                    return 0;
+                case '<':
+                    if (a.value < b.value) {
+                        return 1;
+                    }
+                    if (b.value > a.value) {
+                        return -1;
+                    }
+                    return 0;
+                case '>=':
+                    if (a.value >= b.value) {
+                        return 1;
+                    }
+                    return -1;
+                case '<=':
+                    if (a.value <= b.value) {
+                        return 1;
+                    }
+                    return -1;
+                case '+':
+                    return a.value+b.value;
+                case '-':
+                    return a.value-b.value;
+                case '*':
+                    return a.value*b.value;
+                case '/':
+                    return a.value/b.value;
+                case '%':
+                    return a.value%b.value;
+                case '^':
+                    return a.value*b.value;
+                default:
+                    this.errorHandler(`Sort operator "${comparisonOperator}" has no current implementation`);
+                    throw new Error('unhit error makes typescript happy');
+            }
+        });
+
+        return {
+            match: true,
+            value: {
+                result: compareValueMap.map(item => pathVal[item.index]),
+                refPoint: curRefPoint
+            }
+        }
+    }
+
     process(rule: Rule, prevRefPoint: RefPoint | null, cascadeVal: any): {
         result: any;
         refPoint: RefPoint | null;
@@ -793,6 +995,21 @@ class RuleEvaluator {
         }
 
         ruleMatch = this.handleLengthRule(genericRule, curRefPoint, pathVal);
+        if (ruleMatch.match) {
+            return ruleMatch.value;
+        }
+
+        ruleMatch = this.handleArraySliceRule(genericRule, curRefPoint, pathVal);
+        if (ruleMatch.match) {
+            return ruleMatch.value;
+        }
+        
+        ruleMatch = this.handleArraySpliceRule(genericRule, curRefPoint, pathVal);
+        if (ruleMatch.match) {
+            return ruleMatch.value;
+        }
+
+        ruleMatch = this.handleArraySortRule(genericRule, curRefPoint, pathVal);
         if (ruleMatch.match) {
             return ruleMatch.value;
         }
