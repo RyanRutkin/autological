@@ -7,6 +7,7 @@ import {
     ARRAY_OPERATORS
 } from "./types/Operator.type";
 import { Rule } from './types/Rule.type';
+import { isIn } from './utils';
 
 type RuleMatch = {
     match: boolean;
@@ -281,7 +282,7 @@ class RuleEvaluator {
     private handleArrayInspectionRule(genericRule: Record<string, any>, curRefPoint: RefPoint, pathVal: any): RuleMatch {
         // Guaranteed by previous check
         const curOperator: string = genericRule['operator'];
-        if (!(ARRAY_INSPECTION_OPERATORS as unknown as string[]).includes(curOperator)) {
+        if (!isIn<string>(ARRAY_INSPECTION_OPERATORS, curOperator)) {
             return {
                 match: false,
                 value: null
@@ -329,7 +330,7 @@ class RuleEvaluator {
 
     private handleArrayArithmeticRule(genericRule: Record<string, any>, curRefPoint: RefPoint, pathVal: any): RuleMatch {
         const curOperator: string = genericRule['operator'];
-        if (!(ARRAY_ARITHMETIC_OPERATORS as unknown as string[]).includes(curOperator)) {
+        if (!isIn<string>(ARRAY_ARITHMETIC_OPERATORS, curOperator)) {
             return {
                 match: false,
                 value: null
@@ -457,7 +458,7 @@ class RuleEvaluator {
 
     private handleContainsRule(genericRule: Record<string, any>, curRefPoint: RefPoint, pathVal: any): RuleMatch {
         const curOperator: string = genericRule['operator'];
-        if (!(ARRAY_OPERATORS as unknown as string[]).includes(curOperator)) {
+        if (!isIn<string>(ARRAY_OPERATORS, curOperator)) {
             return {
                 match: false,
                 value: null
@@ -505,7 +506,7 @@ class RuleEvaluator {
 
     private handleNonValueArithmeticRule(genericRule: Record<string, any>, curRefPoint: RefPoint, pathVal: any): RuleMatch {
         const curOperator: string = genericRule['operator'];
-        if (!(NON_TARGET_VALUE_ARITHMETIC_OPERATORS as unknown as string[]).includes(curOperator)) {
+        if (!isIn<string>(NON_TARGET_VALUE_ARITHMETIC_OPERATORS, curOperator)) {
             return {
                 match: false,
                 value: null
