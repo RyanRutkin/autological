@@ -66,7 +66,10 @@ class RuleEvaluator {
         this.documentMap = {
             '$vars': {},
             ...kwargs.documents.reduce((acc, cur) => {
-                const docId = cur['$id'];
+                let docId = cur['$id'];
+                if (kwargs.documents.length === 1 && !cur['$id']) {
+                    docId = 'main';
+                }
                 if (!docId) {
                     throw new Error('All documents are required to have an "$id" property.')
                 }
