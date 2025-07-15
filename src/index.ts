@@ -1,5 +1,5 @@
 export { evaluateRules } from './evaluateRules.js';
-export type { Rule } from './types/Rule.type.js';
+export type { Rule } from './defs/Rule.js';
 export {
     ARRAY_ARITHMETIC_OPERATORS,
     ARRAY_INSPECTION_OPERATORS,
@@ -15,7 +15,7 @@ export {
     UNDEFINED_OPERATORS,
     VALUE_ARITHMETIC_OPERATORS,
     VALUE_OPERATORS,
-} from './types/Operator.type';
+} from './defs/Operator.js';
 export type {
     ArithmeticOperator,
     ArrayArithmeticOperator,
@@ -37,4 +37,4 @@ export type {
     UndefinedOperator,
     ValueArithmeticOperator,
     ValueOperator,
-} from './types/Operator.type';
+} from './defs/Operator.js';

@@ -38,4 +38,3 @@ export type ArrayArithmeticOperator = typeof ARRAY_ARITHMETIC_OPERATORS[number];
 export type ArithmeticOperator = ArrayArithmeticOperator | ValueArithmeticOperator;
 export const INVERSION_ARITHMETIC_OPERATORS = ['abs'] as const;
 export type InversionArithmeticOperator = typeof INVERSION_ARITHMETIC_OPERATORS[number];
-// TODO - sort

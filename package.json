@@ -1,5 +1,6 @@
 {
   "name": "@ryanrutkin/autological",
+  "type": "module",
   "version": "2.0.0",
   "description": "A lightweight querying library for local data processing.",
   "types": "./lib/cjs/types/index.d.ts",
@@ -17,7 +18,7 @@
     "url": "git+https://github.com/RyanRutkin/autological.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ryan Rutkin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/RyanRutkin/autological/issues"

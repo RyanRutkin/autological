@@ -4,9 +4,8 @@
         "lib": [
           "esnext"
         ],
-        "module": "esnext",
+        "module": "nodenext",
         "strict": true,
-        "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "checkJs": true,

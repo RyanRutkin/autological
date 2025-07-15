@@ -18,7 +18,7 @@ import {
     UndefinedOperator,
     ValueArithmeticOperator,
     ValueOperator
-} from './Operator.type';
+} from './Operator.js';
 
 export type EndRule = {
     path?: string;

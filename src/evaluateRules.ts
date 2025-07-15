@@ -1,13 +1,13 @@
 import { RefPoint, getReferenceByPointer, setByPointerWithRef, tokenizeJsonPointer } from 'json-pointer-relational';
-import { isLogicalGroupingRule } from './guards/isLogicalGroupingRule.guard';
+import { isLogicalGroupingRule } from './guards/isLogicalGroupingRule.js';
 import {
     ARRAY_INSPECTION_OPERATORS,
     ARRAY_ARITHMETIC_OPERATORS,
     NON_TARGET_VALUE_ARITHMETIC_OPERATORS,
     ARRAY_OPERATORS
-} from "./types/Operator.type";
-import { Rule } from './types/Rule.type';
-import { isIn } from './utils';
+} from "./defs/Operator.js";
+import { type Rule } from './defs/Rule.js';
+import { isIn } from './utils.js';
 
 type RuleMatch = {
     match: boolean;
